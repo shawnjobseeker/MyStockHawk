@@ -30,6 +30,7 @@ import butterknife.ButterKnife;
 
 class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
+    public static final String[] ARABIC_NUMERALS = {"\u0660", "\u0661", "\u0662", "\u0663", "\u0664", "\u0665", "\u0666", "\u0667", "\u0668", "\u0669"};
     private final Context context;
     private final DecimalFormat dollarFormatWithPlus;
     private final DecimalFormat dollarFormat;
@@ -40,7 +41,6 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
     StockAdapter(Context context, StockAdapterOnClickHandler clickHandler) {
         this.context = context;
         this.clickHandler = clickHandler;
-
         dollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
         dollarFormatWithPlus = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
         dollarFormatWithPlus.setPositivePrefix("+$");
@@ -49,7 +49,22 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         percentageFormat.setMinimumFractionDigits(2);
         percentageFormat.setPositivePrefix("+");
     }
-
+    public static String convertToArabicNumerals(String input) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            char p = input.charAt(i);
+            if (Character.isDigit(p)) {
+                int pInt = (int)p;
+                if (pInt >= 48 && pInt <= 57)
+                    builder.append(ARABIC_NUMERALS[(int)p - 48]);
+                else
+                    builder.append(p);
+            }
+            else
+                builder.append(p);
+        }
+        return builder.toString();
+    }
     void setCursor(Cursor cursor) {
         this.cursor = cursor;
         notifyDataSetChanged();
@@ -60,6 +75,7 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         cursor.moveToPosition(position);
         return cursor.getString(Contract.Quote.POSITION_SYMBOL);
     }
+
 
     @Override
     public StockViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -73,11 +89,11 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
     public void onBindViewHolder(StockViewHolder holder, int position) {
 
         cursor.moveToPosition(position);
-
         holder.name.setText(cursor.getString(Contract.Quote.POSITION_NAME));
         holder.symbol.setText(cursor.getString(Contract.Quote.POSITION_SYMBOL));
         holder.priceValue = cursor.getFloat(Contract.Quote.POSITION_PRICE);
-        holder.price.setText(dollarFormat.format(holder.priceValue));
+        String priceString = dollarFormat.format(holder.priceValue);
+
 
         float rawAbsoluteChange = cursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
         float percentageChange = cursor.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
@@ -89,13 +105,19 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         }
         String change = dollarFormatWithPlus.format(rawAbsoluteChange);
         String percentage = percentageFormat.format(percentageChange / 100);
-
+        if (context.getResources().getConfiguration().locale.getLanguage().equals("ar")) {
+            priceString = convertToArabicNumerals(priceString);
+            change = convertToArabicNumerals(change);
+            percentage = convertToArabicNumerals(percentage);
+        }
+        holder.price.setText(priceString);
         if (PrefUtils.getDisplayMode(context)
                 .equals(context.getString(R.string.pref_display_mode_absolute_key))) {
             holder.change.setText(change);
         } else {
             holder.change.setText(percentage);
         }
+        holder.itemView.setContentDescription(context.getString(R.string.history_for, holder.name.getText()));
         holder.parseHistoryData(cursor.getString(Contract.Quote.POSITION_HISTORY));
 
 
@@ -144,16 +166,17 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
             clickHandler.onClick(cursor.getString(symbolColumn));
             GraphView graphView = new GraphView(context);
             plotLineGraph(graphView);
-            AlertDialog dialog = new AlertDialog.Builder(context)
-                    .setTitle(context.getString(R.string.history_for, name.getText().toString()))
+            AlertDialog.Builder builder = new AlertDialog.Builder(context)
                     .setView(graphView)
-                    .setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
                 }
-            }).create();
-            dialog.show();
+            });
+            if (!name.getText().toString().isEmpty())
+                builder.setTitle(context.getString(R.string.history_for, name.getText().toString()));
+            builder.create().show();
 
         }
         void parseHistoryData(String history) {

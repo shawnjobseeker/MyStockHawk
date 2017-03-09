@@ -53,7 +53,7 @@ public class AddStockDialog extends DialogFragment {
                         addStock();
                     }
                 });
-        builder.setNegativeButton(getString(R.string.dialog_cancel), null);
+        builder.setNegativeButton(getString(android.R.string.cancel), null);
 
         Dialog dialog = builder.create();
 

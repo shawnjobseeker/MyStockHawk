@@ -27,11 +27,11 @@ public class StockHawkApp extends Application {
             @Override
             public void handleMessage(Message msg) {
                 if (msg.obj instanceof String && currentActivity instanceof MainActivity) {
-                    if (((MainActivity)currentActivity).networkUp())
-                        Toast.makeText(currentActivity, getString(R.string.error_no_such_stock, msg.obj), Toast.LENGTH_SHORT).show();
-                    ((MainActivity)currentActivity).dismissSwipeRefresh();
+                    MainActivity activity = ((MainActivity)currentActivity);
+                    if (activity.networkUp())
+                        activity.toastOrSpeak(getString(R.string.error_no_such_stock, msg.obj));
+                    activity.dismissSwipeRefresh();
                 }
-
             }
         };
 
