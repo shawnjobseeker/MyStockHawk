@@ -155,7 +155,6 @@ public void dismissSwipeRefresh() {
             map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, Integer.toHexString(text.hashCode()));
             tts.speak(text, TextToSpeech.QUEUE_ADD, map);
         }
-        else
             Toast.makeText(this, text, Toast.LENGTH_LONG).show();
     }
     @Override
@@ -188,8 +187,10 @@ public void dismissSwipeRefresh() {
         if (PrefUtils.getDisplayMode(this)
                 .equals(getString(R.string.pref_display_mode_absolute_key))) {
             item.setIcon(R.drawable.ic_percentage);
+            item.setTitle(getString(R.string.pref_display_mode_key) + " " + getString(R.string.pref_display_mode_percentage_key));
         } else {
             item.setIcon(R.drawable.ic_dollar);
+            item.setTitle(getString(R.string.pref_display_mode_key) + " " + getString(R.string.pref_display_mode_absolute_key));
         }
     }
 

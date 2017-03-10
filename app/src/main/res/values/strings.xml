@@ -23,7 +23,8 @@
     <string name="value">Value (USD)</string>
     <string name="action_change_units">@string/pref_display_mode_key</string>
 
-
+    <string name="fell_by">Fell by %1$s to %2$s</string>
+    <string name="rose_by">Rose by %1$s to %2$s</string>
     <string name="dialog_title">Add Stock</string>
     <string name="dialog_hint">Symbol (e.g. GOOG)</string>
 

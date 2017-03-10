@@ -110,6 +110,7 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
             change = convertToArabicNumerals(change);
             percentage = convertToArabicNumerals(percentage);
         }
+
         holder.price.setText(priceString);
         if (PrefUtils.getDisplayMode(context)
                 .equals(context.getString(R.string.pref_display_mode_absolute_key))) {
@@ -117,7 +118,13 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         } else {
             holder.change.setText(percentage);
         }
-        holder.itemView.setContentDescription(context.getString(R.string.history_for, holder.name.getText()));
+        String accessibilityChange = holder.change.getText().toString();
+        if (accessibilityChange.startsWith("+") || accessibilityChange.startsWith("-"))
+            accessibilityChange = accessibilityChange.substring(1);
+        if (rawAbsoluteChange > 0)
+            holder.itemView.setContentDescription(holder.name.getText() + context.getString(R.string.rose_by, accessibilityChange, priceString));
+        else
+            holder.itemView.setContentDescription(holder.name.getText() + context.getString(R.string.fell_by, accessibilityChange, priceString));
         holder.parseHistoryData(cursor.getString(Contract.Quote.POSITION_HISTORY));
 
 
