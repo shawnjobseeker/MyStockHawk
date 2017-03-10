@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">الأسهم الصقور</string>
+    <string name="history">التاريخ</string>
+    <string name="history_for">التاريخ ل %1$s</string>
+    <string name="value">القيمة (دولار أمريكي)</string>
+
+    <string name="dialog_title">إضافة الأسهم</string>
+    <string name="dialog_hint">رمز (مثلا GOOG)</string>
+
+    <string name="dialog_add">إضافة</string>
+
+    <string name="error_no_network">لا متصلا بشبكة. سيتم تحميل المؤشر الأسهم عندما تتوفر الشبكة.</string>
+    <string name="error_no_stocks">أضيفت يوجد مخزون. اضغط على زر العائمة لإضافة الأسهم.</string>
+    <string name="error_no_such_stock">لا أسعار الأسهم ل %1$s</string>
+
+    <string name="stock_added_no_connectivity">وأضاف الرمز ٪S. سيتم تحديث عندما تتوفر الشبكة.</string>
+    <string name="toast_no_connectivity">سيتم تحديث عندما تتوفر. الشبكة</string>
+    <string name="search_stock">الأسهم البحث</string>
+    <string name="fell_by">انخفض بنسبة%1$s إلى %2$s</string>
+    <string name="rose_by">ارتفع بنسبة%1$s إلى %2$s</string>
+</resources>
